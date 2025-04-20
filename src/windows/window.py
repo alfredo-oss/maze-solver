@@ -31,3 +31,6 @@ class Window:
 
     def draw_cell(self, cell: Cell):
         cell.draw(self.__canvas)
+
+    def draw_connecting_cell(self, origin_cell: Cell, destination_cell: Cell):
+        origin_cell.draw_move(self.__canvas, destination_cell)

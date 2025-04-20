@@ -20,4 +20,12 @@ class Cell:
             canvas.create_line(self.__x1, self.__y1, self.__x2, self.__y1)
         if self.has_bottom_wall:
             canvas.create_line(self.__x1, self.__y2, self.__x2, self.__y2)
-        
+    
+    def draw_move(self, canvas: Canvas, to_cell, undo=False):
+        origin_x = self.__x1 + (self.__x2 - self.__x1)/2
+        origin_y = self.__y1 - (self.__y1 - self.__y2)/2
+
+        destination_x = to_cell.__x1 + (to_cell.__x2 - to_cell.__x1)/2
+        destination_y = to_cell.__y1 - (to_cell.__y1 - to_cell.__y2)/2
+        filling = "grey" if undo else "red"
+        canvas.create_line(origin_x, origin_y, destination_x, destination_y, fill=filling)
