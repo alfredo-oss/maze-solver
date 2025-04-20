@@ -16,16 +16,16 @@ class Maze:
 
 
     def _create_cells(self, num_rows: int, num_cols: int) -> List[List[Cell]]:
-
         result = [[0 for _ in range(num_cols)] for _ in range(num_rows)]
         base_y = self.__y1
         for row in range(num_rows):
-            base_y = base_y - self.__cell_size_y
+            base_y = base_y + self.__cell_size_y
             base_x = self.__x1
             for col in range(num_cols):
-                result[row][col] = Cell(base_x, base_y, base_x + self.__cell_size_x, base_y - self.__cell_size_y)
-                result[row][col].draw(self.__win.canvas)
+                cell = Cell(base_x, base_y, base_x + self.__cell_size_x, base_y + self.__cell_size_y)
+                cell.draw(self.__win.canvas)
                 self._animate()
+                result[row][col] = cell
                 base_x += self.__cell_size_x
     
         return result
@@ -33,6 +33,11 @@ class Maze:
     def _animate(self):
         self.__win.redraw()
         time.sleep(0.05)
-        
+
+    def _break_entrance_and_exit(self):
+        self._cells[0][0].has_top_wall = False
+        self._cells[0][0].draw(self.__win.canvas)
+        self._cells[self.__num_rows - 1][self.__num_cols - 1].has_bottom_wall = False
+        self._cells[self.__num_rows - 1][self.__num_cols - 1].draw(self.__win.canvas)    
 
 

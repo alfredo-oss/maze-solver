@@ -13,13 +13,24 @@ class Cell:
     
     def draw(self, canvas: Canvas):
         if self.has_left_wall:
-            canvas.create_line(self.__x1, self.__y1, self.__x1, self.__y2)
+            canvas.create_line(self.__x1, self.__y1, self.__x1, self.__y2, fill="black")
+        else:
+            canvas.create_line(self.__x1, self.__y1, self.__x1, self.__y2, fill="white")
+
         if self.has_right_wall:
-            canvas.create_line(self.__x2, self.__y1, self.__x2, self.__y2)
+            canvas.create_line(self.__x2, self.__y1, self.__x2, self.__y2, fill="black")
+        else:
+            canvas.create_line(self.__x2, self.__y1, self.__x2, self.__y2, fill="white")
+
         if self.has_top_wall:
-            canvas.create_line(self.__x1, self.__y1, self.__x2, self.__y1)
+            canvas.create_line(self.__x1, self.__y1, self.__x2, self.__y1, fill="black")
+        else: 
+            canvas.create_line(self.__x1, self.__y1, self.__x2, self.__y1, fill="white")
+
         if self.has_bottom_wall:
-            canvas.create_line(self.__x1, self.__y2, self.__x2, self.__y2)
+            canvas.create_line(self.__x1, self.__y2, self.__x2, self.__y2, fill="black")
+        else:
+            canvas.create_line(self.__x1, self.__y2, self.__x2, self.__y2, fill="white")
     
     def draw_move(self, canvas: Canvas, to_cell, undo=False):
         origin_x = self.__x1 + (self.__x2 - self.__x1)/2
