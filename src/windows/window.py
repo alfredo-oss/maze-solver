@@ -9,8 +9,8 @@ class Window:
         self.__root = Tk()
         self.__root.title("Maze-Solver Window")
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
-        self.__canvas = Canvas()
-        self.__canvas.pack()
+        self.canvas = Canvas()
+        self.canvas.pack()
         self.__running = False
         
 
@@ -27,10 +27,10 @@ class Window:
         self.__running = False
 
     def draw_line(self, line: Line, fill_color: str):
-        line.draw(self.__canvas, fill_color=fill_color)
+        line.draw(self.canvas, fill_color=fill_color)
 
     def draw_cell(self, cell: Cell):
-        cell.draw(self.__canvas)
+        cell.draw(self.canvas)
 
     def draw_connecting_cell(self, origin_cell: Cell, destination_cell: Cell):
-        origin_cell.draw_move(self.__canvas, destination_cell)
+        origin_cell.draw_move(self.canvas, destination_cell)
