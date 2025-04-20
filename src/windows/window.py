@@ -1,5 +1,6 @@
 from tkinter import Tk, BOTH, Canvas
 from windows.line import Line
+from maze.cell import Cell
 
 class Window:
     def __init__(self, width, height):
@@ -27,3 +28,6 @@ class Window:
 
     def draw_line(self, line: Line, fill_color: str):
         line.draw(self.__canvas, fill_color=fill_color)
+
+    def draw_cell(self, cell: Cell):
+        cell.draw(self.__canvas)
