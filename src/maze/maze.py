@@ -1,19 +1,23 @@
 from maze.cell import Cell
 from windows.window import Window
-from typing import List
+from typing import List, Optional
 import time
+import random
+from collections import deque
 
 class Maze:
-    def __init__(self, x1: float, y1: float, num_rows: int, num_cols: int, cell_size_x: int, cell_size_y: int, win: Window):
+    def __init__(self, x1: float, y1: float, num_rows: int, num_cols: int, cell_size_x: int, cell_size_y: int, win: Window, seed: Optional[int] = None):
         self.__x1 = x1
-        self.__y1 = y1
+        self.__y1 = y1 
         self.__num_rows = num_rows
         self.__num_cols = num_cols
         self.__cell_size_x = cell_size_x
         self.__cell_size_y = cell_size_y
         self.__win = win
         self._cells = self._create_cells(self.__num_rows, self.__num_cols)
-
+        self._break_walls_r(0,0)
+        if seed:
+            random.seed(seed)
 
     def _create_cells(self, num_rows: int, num_cols: int) -> List[List[Cell]]:
         result = [[0 for _ in range(num_cols)] for _ in range(num_rows)]
@@ -39,5 +43,41 @@ class Maze:
         self._cells[0][0].draw(self.__win.canvas)
         self._cells[self.__num_rows - 1][self.__num_cols - 1].has_bottom_wall = False
         self._cells[self.__num_rows - 1][self.__num_cols - 1].draw(self.__win.canvas)    
-
-
+    
+    def _break_walls_r(self, row, col):
+        print(f"{row}, {col}")
+        if (min(row, col) < 0 or row == self.__num_rows or col == self.__num_cols or self._cells[row][col].visited):
+            return
+        self._cells[row][col].visited = True
+        possible_movements = [(row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1)]
+        valid_movements = []
+        for cur_row, cur_col in possible_movements:
+            if self.is_valid_choice(cur_row, cur_col):
+                valid_movements.append((cur_row, cur_col))
+        valid_movements = deque(valid_movements)
+        if not valid_movements:
+            return
+        while valid_movements:
+            next_row, next_col = valid_movements.pop()
+            if next_row == row - 1 and next_col == col:  
+                self._cells[row][col].has_top_wall = False
+                self._cells[next_row][next_col].has_bottom_wall = False
+            elif next_row == row and next_col == col - 1:
+                self._cells[row][col].has_left_wall = False
+                self._cells[next_row][next_col].has_right_wall = False
+            elif next_row == row + 1 and next_col == col:
+                self._cells[row][col].has_bottom_wall = False
+                self._cells[next_row][next_col].has_top_wall = False
+            elif next_row == row  and next_col == col + 1:
+                self._cells[row][col].has_right_wall = False
+                self._cells[next_row][next_col].has_left_wall = False
+            self._cells[row][col].draw(self.__win.canvas)
+            self._cells[next_row][next_col].draw(self.__win.canvas)
+            self._animate()
+            self._break_walls_r(next_row, next_col)
+                
+    def is_valid_choice(self, row, col):
+         if (min(row, col) < 0 or row == self.__num_rows or col == self.__num_cols or self._cells[row][col].visited):
+             return False
+         else:
+             return True
