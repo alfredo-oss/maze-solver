@@ -3,7 +3,6 @@ from windows.window import Window
 from typing import List, Optional
 import time
 import random
-from collections import deque
 
 class Maze:
     def __init__(self, x1: float, y1: float, num_rows: int, num_cols: int, cell_size_x: int, cell_size_y: int, win: Window, seed: Optional[int] = None):
@@ -84,5 +83,46 @@ class Maze:
     def _reset_cells_visited(self):
         for row in range(self.__num_rows):
             for col in range(self.__num_cols):
-                if self._cells[row][col].visited == True:
+                if self._cells[row][col].visited:
                     self._cells[row][col].visited = False
+    
+    def solve(self):
+        self._solve_r(0,0)
+
+    def _solve_r(self, row: int, col: int):
+         if (min(row, col) < 0 or row == self.__num_rows or col == self.__num_cols or self._cells[row][col].visited):
+             return False
+         self._animate()
+         self._cells[row][col].visited = True
+         if row == self.__num_rows - 1 and col == self.__num_cols - 1:
+             print("made it")
+             return True
+         
+         if self.is_valid_choice(row - 1, col) and not self._cells[row][col].has_top_wall and not self._cells[row - 1][col].has_bottom_wall:
+            self._cells[row][col].draw_move(self.__win.canvas, self._cells[row - 1][col])
+            if self._solve_r(row - 1, col):
+                return True         
+            else: 
+                self._cells[row][col].draw_move(self.__win.canvas, self._cells[row - 1][col], undo=True)
+         
+         if self.is_valid_choice(row + 1, col) and not self._cells[row][col].has_bottom_wall and not self._cells[row + 1][col].has_top_wall:
+            self._cells[row][col].draw_move(self.__win.canvas, self._cells[row + 1][col])
+            if self._solve_r(row + 1, col):    
+                return True 
+            else:
+                self._cells[row][col].draw_move(self.__win.canvas, self._cells[row + 1][col], undo=True)
+         
+         if self.is_valid_choice(row, col - 1) and not self._cells[row][col].has_left_wall and not self._cells[row][col - 1].has_right_wall:
+            self._cells[row][col].draw_move(self.__win.canvas, self._cells[row][col - 1])
+            if self._solve_r(row, col - 1):     
+                return True 
+            else:
+                self._cells[row][col].draw_move(self.__win.canvas, self._cells[row][col - 1], undo=True)
+         
+         if self.is_valid_choice(row, col + 1) and not self._cells[row][col].has_right_wall and not self._cells[row][col + 1].has_left_wall:
+            self._cells[row][col].draw_move(self.__win.canvas, self._cells[row][col + 1])
+            if self._solve_r(row, col + 1):    
+                return True 
+            else:
+                self._cells[row][col].draw_move(self.__win.canvas, self._cells[row][col + 1], undo=True)
+         return False
