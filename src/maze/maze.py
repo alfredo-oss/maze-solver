@@ -45,20 +45,18 @@ class Maze:
         self._cells[self.__num_rows - 1][self.__num_cols - 1].draw(self.__win.canvas)    
     
     def _break_walls_r(self, row, col):
-        print(f"{row}, {col}")
-        if (min(row, col) < 0 or row == self.__num_rows or col == self.__num_cols or self._cells[row][col].visited):
-            return
         self._cells[row][col].visited = True
         possible_movements = [(row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1)]
-        valid_movements = []
-        for cur_row, cur_col in possible_movements:
-            if self.is_valid_choice(cur_row, cur_col):
-                valid_movements.append((cur_row, cur_col))
-        valid_movements = deque(valid_movements)
-        if not valid_movements:
-            return
-        while valid_movements:
-            next_row, next_col = valid_movements.pop()
+        while True:
+            valid_movements = []
+            for cur_row, cur_col in possible_movements:
+                if self.is_valid_choice(cur_row, cur_col):
+                    valid_movements.append((cur_row, cur_col))
+            if not valid_movements:
+                self._cells[row][col].draw(self.__win.canvas)
+                self._animate()
+                return
+            next_row, next_col = random.choice(valid_movements)
             if next_row == row - 1 and next_col == col:  
                 self._cells[row][col].has_top_wall = False
                 self._cells[next_row][next_col].has_bottom_wall = False
